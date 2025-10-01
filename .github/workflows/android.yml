@@ -1,0 +1,42 @@
+name: android
+on:
+  push:
+    branches:
+     - master
+     - 'feature/**'
+    paths:
+      - 'src/**'
+      - 'android/**'
+      - '.github/workflows/android-build.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'src/**'
+      - 'android/**'
+      - '.github/workflows/android-build.yml'
+
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+
+jobs:
+  android_adb_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            submodules: 'recursive'
+      - name: build
+        run: ./script/android_build.sh
+
+  android_app_build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+            submodules: 'recursive'
+      - name: build
+        run: ./script/android_app_build.sh
+
